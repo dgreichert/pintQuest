@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block header %}
+	Login
+{% endblock %}
+{% block main %}
+        <div class="clearfix">
+	<form action="/login/" method="post" accept-charset="utf-8">
+	<fieldset>
+		{% csrf_token %}
+		<label for="username">Username</label>
+		        <div class="input"><input type="text" name="username" value="" id="username" /></div>
+		<label for="password">Password</label>
+		        <div class="input"><input type="password" name="password" value="" id="password" /></div>
+		 <div class="actions"><input class="btn primary" type="submit" value="Login"></div>
+		 <a href="{% url socialauth_begin 'twitter' %}">Enter using Twitter</a>
+		 <a href="{% url socialauth_begin 'facebook' %}">Enter using Facebook</a>
+		        
+	</fieldset>
+	</form>
+	<a href="/password_reset/">Forgot your password?</a>
+	</div>
+
+{% endblock %}

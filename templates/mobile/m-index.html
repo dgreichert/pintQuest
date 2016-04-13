@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>pintQuest {% block title %}{% endblock %}</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.css" />
+	<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>	
+	<script>
+		$(document).delegate("#drinkBeer", "pagecreate", function(){						
+			$("input#brewerySearchField").autocomplete({
+				source: function(request, response) {
+					$.getJSON("/beer/lookup/", 
+					{ brewery: request.term }, 
+					response);
+				}
+			});			
+			$("input#beerSearchField").autocomplete({
+				source: function(request, response) {
+					$.getJSON("/beer/lookup/", 
+					{ beer: request.term, brewery: $("#brewerySearchField").val() }, 
+					response);
+				}
+			});
+			$('#submit').click(function() {
+
+				var brewerySearchField = $("#brewerySearchField").val();
+				console.log(brewerySearchField);
+				var beerSearchField = $('#beerSearchField').val();
+				//$('#innerContent').html("test");
+				$.ajax({
+					url: '/m/drinkbeer/',
+					type: 'POST',
+					data: 'brewerySearchField=' + brewerySearchField + '&beerSearchField=' + beerSearchField,
+					success: function(result) {
+						$('#message').show();
+						$('#message').html(result);
+						$('#message').delay(2500).fadeOut(2500, function(){
+							window.location = "#home";
+						});
+
+					}
+				});				
+				return false;
+			});
+	
+		});
+	</script>
+</head>
+<body>
+	<div data-role="page" id=home>
+
+		<div data-role="header">
+			<h1>pintQuest</h1>
+		</div><!-- /header -->
+
+		<div data-role="content" id="content">
+			<ul data-role="listview" data-inset="true">
+				<li>
+				<a href="#drinkBeer">Drink Beer</a>
+				</li>
+				<li>
+				<a href="#listFeeds">Beers Drank</a>
+				</li>
+				<li>
+				<a href="/login/">Log In</a>
+				</li>				
+			</ul>
+		</div><!-- /content -->
+
+		<div data-role="footer">
+			<h4>The Footer</h4>
+		</div><!-- /footer -->
+	</div><!-- /home -->
+
+	<div data-role="page" id="drinkBeer">
+		<div data-role="header">
+			<h1>Drink A Beer</h1>
+			<a href="#home" class="ui-btn-left"> Back </a>
+		</div>
+		<div data-role="content">
+			<div id="innerContent">				
+			<form name="beerSubmit" action="/m/drinkbeer/" method="post">
+
+				<div data-role="fieldcontain">
+					Brewery: <input type="text" id="brewerySearchField" name="brewerySearchField"><br />
+					Beer: <input type="text" id="beerSearchField" name="beerSearchField">
+					<fieldset class="ui-grid-a">
+						<div class="ui-block-b">
+							<button data-theme="b" id="submit" type="submit">Drink!</button>
+						</div>
+					</fieldset>
+					<h3 id="message"></h3>
+				</div>
+			</form>	
+			</div>
+
+		</div><!-- /content -->	
+		<div data-role="footer">
+			<h1>pintQuest</h1>
+		</div><!-- /footer -->	
+
+	</div><!-- /page -->
+
+</body>
+</html>

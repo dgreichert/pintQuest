@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>pintQuest {% block title %}{% endblock %}</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="/media/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
+		<link rel="stylesheet" href="/media/mobile/css/jquery.mobile-1.1.0.min.css" />
+		<script src="/media/js/jquery-1.7.1-min.js"></script>
+		<script src="/media/js/jquery-ui.min.js"></script>
+		<script src="/media/mobile/js/jquery.mobile-1.1.0.min.js"></script>
+		<style>
+			.ui-btn input, .ui-btn button { z-index: 1 !important }
+		</style>
+		{% block head %}{% endblock %}
+	</head>
+	<body>
+		{% block main %}{% endblock %}
+	</body>
+</html>

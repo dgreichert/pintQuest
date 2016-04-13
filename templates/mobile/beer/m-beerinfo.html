@@ -1,0 +1,48 @@
+{% extends "mobile/m-base.html" %}
+{% block head %}
+
+{% endblock %}
+{% block main %}
+<div data-role="page" id="beerinfo">
+		<div data-role="header">
+			<h3>Beer Profile</h3>
+		</div>
+		<div data-role="content">
+			{% if beerinfo %}
+				<h1>{{ beerinfo.brewery.name }} {{ beerinfo.name }}</h1>
+				<p>Total drinks for all users: {{ totaldrinks }}</p>
+				<p>Total drinks for you: {{ userdrinks }}</p>
+				{% if userdrinks %}
+				<p>Your last drink for this beer was {{ lastdrink.time }}</p>
+				<input type="hidden" id="beerid" name="beerid" value={{ beerinfo.id }} />				
+				<button id="beerdrink" type="submit" class="ui-btn-hidden" >Drink Again!</button>
+				{% else %}
+				<input type="hidden" id="beerid" name="beerid" value={{ beerinfo.id }} />				
+				<button id="beerdrink" type="submit" class="ui-btn-hidden" >Drink!</button>
+				{% endif %}
+				<div id="beermessage"></div>
+			{% else %}
+				<p>No beers matched your search criteria.</p>
+			{% endif %}			
+		</div>
+<script>
+	$(document).delegate("#beerinfo", "pagecreate", function(){
+		$("#beerdrink").click(function() {
+			var beerid = $("#beerid").val();
+			$.ajax({
+				url: '/m/drinkbeer/',
+				type: 'POST',
+				data: 'beerid=' + beerid,
+				success: function(result) {					
+					$('#beermessage').html(result);
+					$('#beermessage').show();
+					$('#beerdrink').closest('.ui-btn').hide();			
+				}
+			});
+		});
+	});
+</script>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends "mobile/m-base.html" %}
+{% block head %}
+{% endblock %}
+{% block main %}
+<div data-role="page" id="beerRate" data-theme="a">
+	<div data-role="header">
+		<h1>pintQuest</h1>
+	</div>
+	<div data-role="content">
+		<h3>Beer Profile</h3>
+		<div id="innerContent">
+		{% if beerinfo %}
+		        <h1>{{ beerinfo.brewery.name }} {{ beerinfo.name }}</h1>
+			<input type="hidden" id="beerid" name="beerid" value={{ beerinfo.id }} />
+		        {% if userdrinks %}
+				<p>Your last drink for this beer was {{ lastdrink.time }}</p>				
+				<button id="beerdrink" type="submit" class="ui-btn-hidden" >Drink Again!</button>
+			{% else %}				
+				<button id="beerdrink" type="submit" class="ui-btn-hidden" >Drink!</button>
+			{% endif %}
+		        <p>Total drinks for all users: {{ totaldrinks }}</p>
+			<p>Total drinks for you: {{ userdrinks }}</p>			
+			<div id="beermessage"></div>
+		        <div id="reviewSect">
+		                {% if beerRevRq.review %}
+		                        <div id="reviewedBeer"><hr />{{ beerRevRq.review|linebreaks }}</div>
+		                        <button id="editReview" type="submit" class="ui-btn-hidden">Edit</button>
+		                        <div id="reviewSubSect">
+                                                <form name="beerrating" action="/beer/rate/" method="post">
+                                                                <textarea name="beerreview" id="beerreview">{{ beerRevRq.review|linebreaks }}</textarea>
+                                                                <fieldset class="ui-grid-a">
+                                                                <div class="ui-block-b">
+                                                                        <button id="reviewSubmit" type="submit" class="ui-btn-hidden">Save</button>
+                                                                </div>
+                                                                </fieldset>                                                                
+                                                </form>
+                                        </div>
+                                        <div id="newBeerReview"></div>
+		                {% else %}
+		                        <button id="addReview" type="submit" class="ui-btn-hidden">Add a review!</button>
+                                        <div id="reviewSubSect">
+                                                <form name="beerrating" action="/beer/rate/" method="post">
+                                                                <textarea name="beerreview" id="beerreview" placeholder="Review the beer!"></textarea>
+                                                                <fieldset class="ui-grid-a">
+                                                                <div class="ui-block-b">
+                                                                        <button id="reviewSubmit" type="submit" class="ui-btn-hidden">Save</button>
+                                                                </div>
+                                                                </fieldset>                                                                
+                                                </form>
+                                        </div>
+                                        <div id="newBeerReview"></div>
+		                {% endif%}
+		        </div>
+		        
+		{% else %}
+				<p>No beers matched your search criteria.</p>
+                {% endif %}
+		</div>
+	</div><!-- /content -->	
+<script>
+	$(document).delegate("#beerRate", "pagecreate", function(){
+	        $("#reviewSubSect").hide();
+	        $("#beermessage").hide();
+		$("#reviewSubmit").live('click', function() {
+		        $("#beerdrink").hide();
+			var beerreview = $('#beerreview').val();
+			var beerid = $('#beerid').val();
+			$.ajax({
+				url: '/beer/rate/',
+				type: 'POST',
+				data: 'beerid=' + beerid + '&beerreview=' + beerreview,
+				success: function(result) {
+				        $("#reviewSubSect").hide();
+		        	        $("#beermessage").hide();					
+					$('#newBeerReview').html(result);
+					$('#reviewSubmit').closest('.ui-btn').hide();			
+				}
+			});
+			return false;			
+		});
+		$("#addReview").click(function(){
+		        $("#reviewSubSect").show();
+      		        $("#addReview").closest('.ui-btn').hide();
+		});
+		$("#editReview").click(function(){
+			$("#reviewedBeer").hide();
+		        $("#reviewSubSect").show();
+      		        $("#editReview").closest('.ui-btn').hide();
+		});
+		
+		$("#beerdrink").click(function() {
+		        $("#reviewSubmit").hide();
+			var beerid = $("#beerid").val();
+			$.ajax({
+				url: '/m/drinkbeer/',
+				type: 'POST',
+				data: 'beerid=' + beerid,
+				success: function(result) {
+					reloadPg = 1;					
+					$('#beermessage').html(result);
+					$('#beermessage').show();
+					$('#beerdrink').closest('.ui-btn').hide();			
+				}
+			});
+		});
+		
+	});
+</script>
+</div><!-- /page -->
+{% endblock %}

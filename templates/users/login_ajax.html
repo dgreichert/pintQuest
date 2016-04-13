@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>pintQuest Login</title>
+		<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+		<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+		<script src="/media/bootstrap/js/bootstrap.js"></script>
+		<link rel="stylesheet" href="/media/bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" href="/media/css/tbsStyle-ext.css">
+		<link href='http://fonts.googleapis.com/css?family=Trade+Winds' rel='stylesheet' type='text/css'>
+		<script src="/media/js/pqmain.js"></script>
+		<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-2218725-12']);
+			_gaq.push(['_trackPageview']); (function() {
+				var ga = document.createElement('script');
+				ga.type = 'text/javascript';
+				ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(ga, s);
+			})();
+
+		</script>
+	</head>
+	<body>
+		{% include "navbar.html" %}
+		<div class="container">
+			<div class="content">
+				<div class="row">
+					<div class="span12">
+						<h2 id="mainHeader">Login</h2>
+						<form class="form-horizontal" action="/login/json/" method="post" accept-charset="utf-8">
+							<fieldset>
+								<div class="control-group">
+									<label class="control-label" for="username">Username</label>
+									<div class="controls">
+										<input type="text" name="username" value="" id="username" />
+									</div>
+									<label for="password">Password</label>
+									<div class="controls">
+										<input type="password" name="password" value="" id="password" />
+									</div>
+								</div>
+								<div class="form-actions">
+									<input class="btn btn-primary btn-large" type="submit" value="Login">
+								</div>
+								<a href="/password_reset/">Forgot your password?</a>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+			{% include "footer.html" %}

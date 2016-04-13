@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block head %}
+<script>
+	$(document).ready(function() {
+		clearBearDrink();
+
+		$("input#brewerySearchField").autocomplete({
+			source : function(request, response) {
+				$.getJSON("/beer/lookup/", {
+					brewery : request.term
+				}, response);
+			},
+			minLength : 2
+		});
+		$("input#beerSearchField").autocomplete({
+			source : function(request, response) {
+				$.getJSON("/beer/lookup/", {
+					beer : request.term,
+					brewery : $("#brewerySearchField").val()
+				}, response);
+			},
+			minLength : 1
+		});
+
+		$('#submit').click(function() {
+
+			var brewerySearchField = encodeURIComponent($("#brewerySearchField").val());
+			var beerSearchField = encodeURIComponent($('#beerSearchField').val());
+			$('#submit').hide();
+			$('#message').html("Drinking...");
+			$('#message').show();
+
+			$.ajax({
+				url : '/m/drinkbeer/',
+				type : 'POST',
+				data : 'brewerySearchField=' + brewerySearchField + '&beerSearchField=' + beerSearchField,
+				success : function(result) {
+					reloadPg = 1;
+					$('#message').show();
+					$('#message').html(result);
+					$("#drinkMore").show();
+				}
+			});
+			return false;
+		});
+
+		$("#drinkMore").live('click', function(e) {
+			e.preventDefault();
+			if(beerAjax) {
+				beerAjax.abort()
+			}
+			clearBearDrink();
+		});
+	});
+	var clearBearDrink = function() {
+		$("#drinkMore").hide();
+		$('#message').hide();
+		$('#submit').show();
+		$("#brewerySearchField").val("");
+		$("#beerSearchField").val("");
+	};
+
+</script>
+{% endblock%}
+{% block header %}
+Drink A Beer
+{% endblock %}
+{% block main %}
+<form class="form-horizontal" name="beerSubmit" action="/beer/drink/" method="post">
+	<fieldset>
+		<div class="control-group">
+			<label class="control-label" for="brewerySearchField">Brewery</label>
+			<div class="controls">
+				<input type="text" id="brewerySearchField" name="brewerySearchField" placeholder="Brewery">
+			</div>
+			<label class="control-label" for="beerSearchField">Beer</label>
+			<div class="controls">
+				<input type="text" id="beerSearchField" name="beerSearchField" placeholder="Beer">
+			</div>
+		</div>
+		<div class="form-actions">
+			<input id="submit" class="btn btn-primary btn-large" type="submit" value="Drink!">
+			<input id="drinkMore" class="btn btn-primary btn-large" type="submit" value="Drink More!">
+		</div>
+		<h3 id="message"></h3>
+		</div>
+	</fieldset>
+</form>
+{% endblock %} 

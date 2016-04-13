@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block header %}
+	User Profile
+{% endblock %}
+{% block main %}
+	<div id="userInfo">
+	<form>
+	        <label for="usernameInput">Username </label>
+	        <div class="input">
+	                <input id="usernameInput" class="xlarge" type="text" value="{{ request.user.username }}" placeholder="Username"></input>
+	        </div>
+	        <label>Name </label>
+	        <div class="input">
+	                <div class="inline-inputs">
+	                        <input id="firstnameInput" class="xlarge" type="text" value="{{ request.user.first_name }}" placeholder="First Name"></input>
+	                        <input id="lastnameInput" class="xlarge" type="text" value="{{ request.user.last_name }}" placeholder="Last Name"></input>
+	                </div>
+	        </div>
+	        <label for="emailInput">Email </label>
+	        <div class="input">
+	                <input id="emailInput" class="xlarge" type="text" value="{{ request.user.email }}"></input>
+	        </div>
+        </form>
+	</div>
+{% endblock %}

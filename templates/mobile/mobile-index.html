@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>pintQuest</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+		<link rel="stylesheet" href="/media/themes/pintQuest.css" />
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css" />
+		<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
+		<style>
+			.ui-btn input, .ui-btn button { z-index: 1 !important }
+		</style>
+		<script>
+				var reloadPg = 1;
+
+	var drinkno;
+	var beer;
+	var brewery;
+	var time;
+	$(document).bind("mobileinit", function() {
+		$.mobile.touchOverflowEnabled = true;
+	});
+
+	$(document).delegate("#home", "pageshow", function() {
+		if(reloadPg) {
+			var userbeerurl = "/userlist/userbeers.json";
+			$("#beerlist").fadeOut();
+			$("#homeloading").fadeIn();
+			$.ajax({
+				type : "get",
+				url : userbeerurl,
+				dataType : "json",
+				success : function(results) {
+					reloadPg = 0;
+					$("#beerlist").html("");
+					results = eval(results);
+					$("#homeloading").fadeOut(function() {
+						$("#beerlist").fadeIn();
+						$.each(results, function(key, drink) {
+							$("#beerlist").append('<li><a href=/beer/' + drink.beerid + '/ data-rel="dialog">' + drink.brewery + ' ' + drink.beer + '<br/ ><span style="font-size:65%"> ' + drink.time + '</span></a><a href="#deleteDrink" data-rel="dialog" class="deleteDrinkBtn" data-icon="delete" onclick="drinkno=' + drink.drinkno + '; brewery=\'' + drink.brewery + '\'; beer=\'' + drink.beer + '\'; time=\'' + drink.time + '\'; return false;">' + drink.drinkno + '</a></li>');
+						});
+
+						$('#beerlist').listview("refresh");
+					});
+				}
+			});
+		}
+	});
+
+	$("#deleteDrink").live("pageshow", function() {
+		$('#delMsg').hide();
+		$('#deleteGroup').show();
+		$("#drinkBreweryName").html(brewery);
+		$("#drinkBeerName").html(beer);
+		$("#drinkTime").html(time);
+
+		$("#deleteDrinkBtn").click(function() {
+			var deletedrink = "/drink/delete/";
+			$('#deleteGroup').hide();
+			$('#delMsg').show();
+			$('#delMsg').html("Removing...");
+			$.ajax({
+				url : deletedrink,
+				type : 'POST',
+				data : 'drinkno=' + drinkno,
+				success : function(result) {
+					reloadPg = 1;
+					$('#delMsg').html(result);
+				}
+			});
+		});
+	});
+
+	$(document).delegate("#drinkBeer", "pageshow", function() {
+		$('#submit').closest('.ui-btn').show();
+		$("#brewerySearchField").val("");
+		$("#beerSearchField").val("");
+
+		$("input#brewerySearchField").autocomplete({
+			source : function(request, response) {
+				$.getJSON("/beer/lookup/", {
+					brewery : request.term
+				}, response);
+			},
+			minLength: 2
+		});
+		$("input#beerSearchField").autocomplete({
+			source : function(request, response) {
+				$.getJSON("/beer/lookup/", {
+					beer : request.term,
+					brewery : $("#brewerySearchField").val()
+				}, response);
+			},
+			minLength: 1
+		});
+		$('#submit').click(function() {
+
+			var brewerySearchField = encodeURIComponent($("#brewerySearchField").val());
+			var beerSearchField = encodeURIComponent($('#beerSearchField').val());
+			$('#submit').closest('.ui-btn').hide();
+			$('#message').show();
+			$('#message').html("Drinking...");
+
+			$.ajax({
+				url : '/m/drinkbeer/',
+				type : 'POST',
+				data : 'brewerySearchField=' + brewerySearchField + '&beerSearchField=' + beerSearchField,
+				success : function(result) {
+					reloadPg = 1;
+					$('#message').show();
+					$('#message').html(result);
+					$('#message').delay(2500).fadeOut(2500, function() {
+						window.location = "#home";
+					});
+				}
+			});
+			return false;
+		});
+	});
+	</head>
+	<body>
+<div data-role="page" id=home data-theme="a">
+	<div data-role="header" data-id="foo1" data-position="fixed">
+		<h1>pintQuest</h1>
+		<a href="/m/logout/" data-rel="dialog" class="ui-btn-right" data-ajax="false">Logout</a>
+	</div><!-- /header -->
+	<div data-role="content" id="content">
+		<h3>Your Recent Beers</h3>
+		<div id="homeloading">
+			Loading...
+		</div>
+		<br />
+		<ul id="beerlist" data-role="listview" data-inset="true" data-filter="true" data-split-icon="gear"></ul>
+	</div><!-- /content -->
+	<div data-role="footer" data-id="foo1" data-position="fixed">
+		<div data-role="navbar">
+			<ul>
+				<li>
+					<a href="#home" class="ui-btn-active ui-state-persist" data-icon="home">Home</a>
+				</li>
+				<li>
+					<a href="#drinkBeer" data-icon="check">Drink Beer</a>
+				</li>
+			</ul>
+		</div><!-- /navbar -->
+	</div><!-- /footer -->
+</div><!-- /home -->
+<div data-role="page" id="drinkBeer" data-theme="a">
+	<div data-role="header" data-id="foo1" data-position="fixed">
+		<h1>pintQuest</h1>
+		<a href="/m/logout/" data-rel="dialog" class="ui-btn-right" data-ajax="false">Logout</a>
+	</div>
+	<div data-role="content">
+		<h3>Drink a Beer</h3>
+		<div id="innerContent">
+			<form name="beerSubmit" action="/m/drinkbeer/" method="post">
+				<div data-role="fieldcontain">
+					<input type="text" id="brewerySearchField" name="brewerySearchField" placeholder="Brewery">
+					<br />
+					<input type="text" id="beerSearchField" name="beerSearchField" placeholder="Beer">
+					<fieldset class="ui-grid-a">
+						<div class="ui-block-b">
+							<button id="submit" type="submit" class="ui-btn-hidden">
+								Drink!
+							</button>
+						</div>
+					</fieldset>
+					<h3 id="message"></h3>
+				</div>
+			</form>
+		</div>
+	</div><!-- /content -->
+	<div data-role="footer" data-id="foo1" data-position="fixed">
+		<div data-role="navbar">
+			<ul>
+				<li>
+					<a href="#home" data-icon="home" data-direction="reverse">Home</a>
+				</li>
+				<li>
+					<a href="#drinkBeer" class="ui-btn-active ui-state-persist" data-icon="check">Drink Beer</a>
+				</li>
+			</ul>
+		</div><!-- /navbar -->
+	</div><!-- /footer -->
+</div><!-- /page -->
+<div data-role="page" id="deleteDrink" data-theme="a">
+	<div data-role="header">
+		<h3>Remove Drink?<h3>
+	</div>
+	<div data-role="content">
+		Are you sure you want to remove this specific drink?
+		<br />
+		Drink Time: <label id="drinkTime"></label>
+		<br />
+		Beer: <label id="drinkBreweryName"></label><label id="drinkBeerName"></label>
+		<fieldset class="ui-grid-a" id="deleteGroup">
+			<div class="ui-block-a">
+				<button id="deleteDrinkBtn" type="submit" class="ui-btn-hidden">
+					Remove
+				</button>
+			</div>
+			<div class="ui-block-b">
+				<a href="#" id="deleteCancel" data-role="button" data-rel="back">Cancel</a>
+			</div>
+		</fieldset>
+		<div id="delMsg"></div>
+	</div>
+</div>
+	</body>
+</html>

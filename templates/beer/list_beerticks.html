@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %} - Your Beers{% endblock %}
+{% block head %}
+<script>
+	$(document).ready(function() {
+		var userurl = "/user/userstats.json";
+
+		$.ajax({
+			type : "get",
+			url : userurl,
+			dataType : "json",
+			success : function(results) {
+				$("#beerlist").html("");
+				results = eval(results);
+
+				if(results.stats) {
+					$('#beer-total').html(results.stats.userbeers + ' beers from ' + results.stats.userbreweries + ' breweries');
+					$('#most-common-beer').html(results.stats.usermcbeerbrewery + ' ' + results.stats.usermcbeer + '<br/>' + results.stats.usermccount + ' drinks');
+					$('#last-beer').html(results.stats.userlastbeerbrewery + ' ' + results.stats.userlastbeer + '<br/>' + results.stats.userlasttime);
+					$('#userLastDrinks .loadingList').hide();
+					$.each(results.drinks, function(key, drink) {
+						$("#beerlist").append('<li><a href=# class="beertext" id="beerid-' + drink.beerid + '">' + drink.brewery + ' ' + drink.beer + '</a></li><div class="expanddetails" id="beerid-' + drink.beerid + '">Loading...</div>');
+						$("div#beerid-" + drink.beerid).hide();
+					});
+				} else {
+					$('#beer-total').html('0 beers from 0 breweries');
+					$('#most-common-beer').html('No beers yet!');
+					$('#last-beer').html('No beers yet!');
+					$('#userLastDrinks .loadingList').html('No beers yet!');
+				}
+			}
+		});
+
+	});
+
+</script>
+{% endblock %}
+{% block main %}
+<div class="row">
+	<div id="beerlistGroup" class="span8">
+		<div id="userLastDrinks">
+			<h3>My Beers</h3>
+			<div class="loadingList">
+				Loading...
+			</div>
+			<ul id="beerlist"></ul>
+		</div>
+	</div>
+	<div class="span4">
+		<div id="statistics" class="profmodule">
+			<h3>Statistics</h3>
+			<div id="collection-size">
+				<h4>Collection Size</h4>
+				<div id="beer-total" class="innercontent">Loading...</div>
+			</div>
+			<div id="most-common">
+				<h4>Most Common Beer</h4>
+				<div id="most-common-beer" class="innercontent">Loading...</div>
+			</div>
+			<div id="last">
+				<h4>Last Beer</h4>
+				<div id="last-beer" class="innercontent">Loading...</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %} 

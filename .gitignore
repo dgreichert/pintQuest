@@ -1,0 +1,12 @@
+*.log
+*.pot
+*.pyc
+*.py~
+settings.pyc
+local_settings.py
+local_settings.pyc
+urlsLive.py
+FUTUREurls.py
+requirements.txt
+.pydevproject
+.project

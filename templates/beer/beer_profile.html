@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %} - Beer Profile{% endblock %}
+{% block head %}{% endblock %}
+{% block main %}
+<div class="row">
+	<div class="span9">
+		<div class="row">
+			<div class="span3">
+				<div class="beerImg"></div>
+			</div>
+			<div class="span6">
+				<h2 id="beerBrewery">{{ brewery }}</h2>
+				<h2 id="beerName">{{ beer }}</h2>
+				<h4 id="beerLocation">{{ brewery_location }}</h4>
+				<ul id="breweryMedia">
+					<li>
+						Website: <span id="breweryURL"><a href="{{ brewery_url }}">{{ brewery_url }}</a></span>
+					</li>
+					<li>
+						Twitter: <span id="breweryTwitter">none</span>
+					</li>
+					<li>
+						Facebook: <span id="breweryFb">none</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<h3>Your Review</h3>
+		<div id="beerRatingDiv">
+			Rating: <span id="beerRating">0</span>
+		</div>
+		<div id="beerYesNoDiv">
+			Would you drink this beer again? <span id="beerYesNo">Yes/No</span>
+		</div>
+		<div id="beerTagDiv">
+			Tags: <span id="beerTags"></span>
+		</div>
+		<div id="beerUserReviewDiv">
+			<div id="beerReviewIsPublicDiv">
+				Public? <span id="beerReviewIsPublic">Yes/No</span>
+			</div>
+			<p id="beerUserReview">
+				Beer review
+			</p>
+		</div>
+	</div>
+	<div class="span3" id="beerRight">
+		<div id="beerDetails" class="profmodule">
+			<h3>Details</h3>
+			<dl id="beerDetList" class="innercontent">
+				<dt>
+					Verified:
+				</dt>
+				<dd id="beerVerified">
+					No
+				</dd>
+				<dt>
+					Type:
+				</dt>
+				<dd id="beerType">
+					Lager
+				</dd>
+				<dt>
+					ABV:
+				</dt>
+				<dd id="beerABV">
+					0%
+				</dd>
+				<dt>
+					IBU:
+				</dt>
+				<dd id="beerIBU">
+					0
+				</dd>
+			</dl>
+		</div>
+		<div id="beerLastDrinks" class="profmodule">
+			<h3>Drinks</h3>
+			<div class="innercontent">
+				<dl id="beerDrinks">
+					<dt>
+						pintQuest:
+					</dt>
+					<dd id="pqbeerdrinks">
+						0
+					</dd>
+					<dt id="beerUserDrinks">
+						You:
+					</dt>
+					<dd id="userbeerdrinks">
+						0
+					</dd>
+				</dl>
+				<ul id="beerDrinkList">
+					<h4>Most Recent Drinks</h4>
+					<li>
+						None yet!
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div id="beerTalk" class="profmodule">
+			<h3>Talk</h3>
+			<div class="innercontent">
+				<div class="beerTwitterTlk">
+					<h4>Twitter</h4>
+					<div class="tweets"></div>
+				</div>
+				<div class="beerYoutubeTlk">
+					<h4>Youtube</h4>
+					<div class="videos"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %} 

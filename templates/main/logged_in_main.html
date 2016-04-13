@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block head %}
+<script>
+	$(document).ready(function() {
+		var beerurl = '/beer/beerstats.json';
+
+		$.ajax({
+			type : "get",
+			url : beerurl,
+			dataType : "json",
+			success : function(results) {
+				$("#beerlist").html("");
+				results = eval(results);
+				if(results.stats) {
+					$('#mainBeerTotal').html(results.stats.beers);
+					$('#mainBreweryTotal').html(results.stats.breweries);
+					$.each(results.top_beers, function(key, drink) {
+						$("#beerlist").append('<li><a href=# class="beertext" id="beerid-' + drink.beerid + '">' + drink.brewery + ' ' + drink.beer + '</a></li><div class="expanddetails" id="beerid-' + drink.beerid + '">Loading...</div>');
+						$("div#beerid-" + drink.beerid).hide();
+					});
+				} else {
+					$('#mainBeerTotal').html('There aren\'t any beers! Something must be broken. :(');
+				}
+			}
+		});
+
+		var userurl = '/user/drinks/drinks.json';
+		$.ajax({
+			type : "get",
+			url : userurl,
+			dataType : "json",
+			data : "pageNo=1&totalResults=25",
+			success : function(results) {
+				$("#drinklist").html("");
+				$("#userLastDrinks .loadingList").hide();
+				results = eval(results);
+				if(results) {
+					$.each(results, function(key, drink) {
+						$("#drinklist").append('<li><a href=# class="drinktext" id="drinkid-' + drink.drinkno + '" onclick="time=\'' + drink.time + '\';"  >' + drink.brewery + ' ' + drink.beer + '</a></li><div class="expanddetails" id="drinkid-' + drink.drinkno + '">' + drink.time + '<a data-toggle="modal" href="#delDrinkModal" class="deldrink btn btn-danger">Delete Drink <i class="icon-trash icon-white"></i></a></div>');
+						$("div#drinkid-" + drink.drinkno).hide();
+					});
+				} else {
+					$('#drinklist').html('You haven\'t drank any beers yet!');
+				}
+			}
+		});
+	});
+
+</script>
+{% endblock %}
+{% block header %}
+Welcome back, {{ request.user.username }}!
+{% endblock %}
+{% block main %}
+<div class="row">
+	<div id="mainUserStats" class="span7">
+		<div id="userLastDrinks">
+			<h3>My Last Drinks</h3>
+			<div id="delDrinkModal" class="modal hide fade">
+				<div class="modal-header">
+					<a class="close" data-dismiss="modal" >&times;</a>
+					<h3>Delete Drink</h3>
+				</div>
+				<div class="modal-body">
+					<div>
+						Are you sure you want to remove this specific drink? This will not delete the entire beer. It will only remove this instance for when you drank it!
+					</div>
+					<dl id="deldrinkdata">
+						<dt>
+							Beer:
+						</dt>
+						<dd class="datainfo" id="drinkBeerInfo"></dd>
+						<dt>
+							Drink Time:
+						</dt>
+						<dd class="datainfo" id="drinkTime"></dd>
+					</dl>
+				</div>
+				<div class="modal-footer" id="deleteGroup">
+					<a href="#" id="deleteDrinkBtn" class="btn btn-primary">Remove</a>
+					<a href="#" id="deleteCancel" class="btn" data-dismiss="modal" >Cancel</a>
+				</div>
+				<div id="delMsg"></div>
+			</div>
+			<div class="loadingList">
+				Loading...
+			</div>
+			<ul id="drinklist"></ul>
+		</div>
+	</div>
+	<div class="span5">
+		<div id="mainTopBeers" class="profmodule">
+			<h3>pintQuest Top Beers</h3>
+			<ul id="beerlist" class="innercontent">
+				Loading...
+			</ul>
+			<h3>pintQuest Totals</h3>
+			<dl id="beerStatList" class="innercontent">
+				<dt>
+					Beers:
+				</dt>
+				<dd id="mainBeerTotal">
+					Loading...
+				</dd>
+				<dt>
+					Breweries:
+				</dt>
+				<dd id="mainBreweryTotal">
+					Loading...
+				</dd>
+			</dl>
+		</div>
+	</div>
+</div>
+{% endblock %} 

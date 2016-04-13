@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}- Search Beers{% endblock %}
+{% block header %}Search Beers{% endblock %}
+{% block main %}
+{% if errors %}
+<ul>
+	{% for error in errors %}
+	<li>
+		{{ error }}
+	</li>
+	{% endfor %}
+</ul>
+{% endif %}
+<form class="form-horizontal" action="/search/" method="get">
+	<fieldset>
+		<div class="control-group">
+			<label class="control-label" for="q">Search Term</label>
+			<div class="controls">
+				<input type="text" name="q">
+			</div>
+		</div>
+		<div class="form-actions">
+			<input type="submit" value="Search" class="btn btn-primary btn-large">
+		</div>
+	</fieldset>
+</form>
+{% endblock %} 

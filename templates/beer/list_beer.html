@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %} - Beer Database{% endblock %}
+{% block head %}
+<script>
+	$(document).ready(function() {
+		var userurl = "/beer/beers.json";
+
+		$.ajax({
+			type : "get",
+			url : userurl,
+			dataType : "json",
+			success : function(results) {
+				$("#beerlist").html("");
+				results = eval(results);
+
+				if(results.stats) {
+					$('#tempListMsg').hide();
+					$.each(results.allbeers, function(key, drink) {
+						$("#beerlist").append('<li><a href=# class="beertext" id="beerid-' + drink.beerid + '">' + drink.brewery + ' ' + drink.beer + '</a></li><div class="expanddetails" id="beerid-' + drink.beerid + '">Loading...</div>');
+						$("div#beerid-" + drink.beerid).hide();
+					});
+				} else {
+					$('#tempListMsg').html('There aren\'t any beers! Somethign must be broken. :(');
+				}
+			}
+		});
+
+	});
+
+</script>
+{% endblock %}
+{% block header %}pintQuest Beer Database{% endblock %}
+{% block main %}
+<div class="row">
+	<div id="beerlistGroup" class="span9">
+		<span id="tempListMsg">Loading...</span>
+		<ul id="beerlist"></ul>
+	</div>
+</div>
+{% endblock %} 

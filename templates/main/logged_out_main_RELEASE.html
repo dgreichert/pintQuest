@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>pintQuest {% block title %}{% endblock %}</title>
+		<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+		<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+		<script src="/media/bootstrap/js/bootstrap-dropdown.js"></script>
+		<link rel="stylesheet" href="/media/bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" href="/media/css/tbsStyle-ext.css">
+		<link href='http://fonts.googleapis.com/css?family=Trade+Winds' rel='stylesheet' type='text/css'>
+		<script>
+			$(document).ready(function() {
+				var userurl = "/beer/beerstats.json";
+				var beertotal = 0;
+
+				$.ajax({
+					type : "get",
+					url : userurl,
+					dataType : "json",
+					success : function(results) {
+						$("#beerlist").html("");
+						results = eval(results);
+						if(results.stats) {
+							$('#mainBeerTotal').html(results.stats.beers);
+							$('#mainBreweryTotal').html(results.stats.breweries);
+							$.each(results.top_beers, function(key, drink) {
+								$("#beerlist").append('<li><a href=# class="beertext" id="beerid-' + drink.beerid + '">' + drink.brewery + ' ' + drink.beer + '</a></li><div class="expanddetails landinglist" id="beerid-' + drink.beerid + '">Loading...</div>');
+								$("div#beerid-" + drink.beerid).hide();
+							});
+						} else {
+							$('#mainBeerTotal').html('There aren\'t any beers! Somethign must be broken. :(');
+						}
+					}
+				});
+			});
+
+		</script>
+		<script src="/media/js/pqmain.js"></script>
+		<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-2218725-12']);
+			_gaq.push(['_trackPageview']);
+			(function() {
+				var ga = document.createElement('script');
+				ga.type = 'text/javascript';
+				ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(ga, s);
+			})();
+
+		</script>
+		<body>
+			<div class="container">
+				<div class="content landingpg">
+					<div class="row">
+						<div class="span12">
+							<div class="row">
+								<div class="span6">
+									<div class="catchphrase">
+										<div class="pqLogo">
+											pintQuest
+										</div>
+										<h1>Hop Up Your Level</h1>
+										<p>
+											Build your collection of beers with pintQuest as you find out which ones you loved and which ones to avoid in your continued quest for that perfect pint.
+										</p>
+									</div>
+									<div class="row">
+										<div class="span2">
+											<div class="icontags">
+												<img src="/media/images/glyphicons_274_beer.png">
+												<p>
+													Drink Beers
+												</p>
+											</div>
+										</div>
+										<div class="span2">
+											<div class="icontags">
+												<img src="/media/images/glyphicons_029_notes_2.png">
+												<p>
+													Review Beers
+												</p>
+											</div>
+										</div>
+										<div class="span2">
+											<div class="icontags">
+												<img src="/media/images/glyphicons_025_binoculars.png">
+												<p>
+													Explore Beers
+												</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="span5">
+									<div class="row" id="landingTopRight">
+										<div class="span2">
+											<a class="btn btn-large btn-info" href="/login/">Login</a>
+										</div>
+										<div class="span2">
+											<a class="btn btn-large btn-success navSignUp" href="/register/">Sign Up!</a>
+										</div>
+									</div>
+									<img class="pqscreen" src="/media/images/screenshot.jpg">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="bottomsection">
+					<div class="row">
+						<div class="span6">
+							<div id="mainTopBeers" class="landingTop">
+								<h4>Most Popular pintQuest Beers</h4>
+								<ul id="beerlist"></ul>
+								<br />
+							</div>
+						</div>
+						<div class="span6">
+							<div id="mainBeerCollection" class="row">
+								<p>
+									Help build the pintQuest collection. <a href="/beer/browse/">Check it out!</a>
+								</p>
+								<div class="span2 totals">
+									<div id="mainBeerTotal">
+										...
+									</div>
+									<div class="totalsLabel">
+										Beers
+									</div>
+								</div>
+								<div class="span2 offset2 totals">
+									<div id="mainBreweryTotal">
+										...
+									</div>
+									<div class="totalsLabel">
+										Breweries
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% include "footer.html" %}

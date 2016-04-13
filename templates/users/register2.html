@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}- Register{% endblock %}
+{% block header %}Sign Up!{% endblock %}
+{% block main %}
+<form class="form-horizontal" method="post" action="">
+	<p>
+		Use the form below to register an account. All fields are required.
+	</p>
+	<fieldset>
+		<div class="control-group">
+			{% if form.non_field_errors %}
+			<div class="alert-message error">
+				<p>
+					{{ form.non_field_errors|join:", " }}
+				</p>
+			</div>
+			{% endif %}
+			{% if form.username.errors %}
+			<div class="alert-message error">
+				<p>
+					{{ form.username.errors|join:", " }}
+				</p>
+			</div>
+			{% endif %} <label class="control-label" for="id_username">Username</label>
+			<div class="controls">
+				{{ form.username }}
+			</div>
+			{% if form.email.errors %}
+			<div class="alert-message error">
+				<p>
+					{{ form.email.errors|join:", " }}
+				</p>
+			</div>
+			{% endif %} <label class="control-label" for="id_name">Email</label>
+			<div class="controls">
+				{{ form.email }}
+			</div>
+			{% if form.passsword1.errors %}
+			<div class="alert-message error">
+				<p>
+					{{ form.password1.errors|join:", " }}
+				</p>
+			</div>
+			{% endif %} <label class="control-label" for="id_password1">Password</label>
+			<div class="controls">
+				{{ form.password1 }}
+			</div>
+			{% if form.passsword2.errors %}
+			<div class="alert-message error">
+				<p>
+					{{ form.password2.errors|join:", " }}
+				</p>
+			</div>
+			{% endif %} <label class="control-label" for="id_password2">Verify Password</label>
+			<div class="controls">
+				{{ form.password2 }}
+			</div>
+		</div>
+		<div class="form-actions">
+			<input type="submit" value="Submit" class="btn btn-primary btn-large">
+		</div>
+	</fieldset>
+</form>
+{% endblock %} 

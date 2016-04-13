@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}- Search Results{% endblock %}
+{% block header %}Search Results{% endblock %}
+{% block main %}
+<p>
+	You searched for: <strong>{{ query }}</strong>
+</p>
+{% if beers %}
+<p>
+	Found {{ beers|length }} beer{{ beers|pluralize }}.
+</p>
+<ul>
+	{% for beer in beers %}
+	<li>
+		{{ beer.brewery }} {{ beer.name }}
+	</li>
+	{% endfor %}
+</ul>
+{% else %}
+<p>
+	No beers matched your search criteria.
+</p>
+{% endif %}
+{% endblock %} 
